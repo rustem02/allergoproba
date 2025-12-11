@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Laboratory – Patient Intake</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7f9; margin:0; }
+    header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 30px; border-bottom:1px solid #ddd; background:#fff;
+    }
+    h1 { text-align:center; margin-top:20px; }
+    .container { max-width:900px; margin:0 auto 40px; padding:0 20px; }
+    .search-block {
+      text-align:center; margin-top:20px; margin-bottom:20px;
+    }
+    input { padding:8px; width:260px; border-radius:4px; border:1px solid #ccc; }
+    button {
+      padding:8px 16px; border-radius:4px; border:none;
+      background:#000; color:#fff; cursor:pointer; margin-left:8px;
+    }
+    .card {
+      background:#fff; border-radius:8px; box-shadow:0 0 0 1px #ddd;
+      padding:20px; margin-top:10px;
+    }
+    .btn-green {
+      background:#21b44f; color:#fff; border:none;
+      padding:10px 20px; border-radius:6px; cursor:pointer;
+      margin-top:15px;
+    }
+    label { font-size:14px; }
+  </style>
+</head>
+<body>
+{% include 'header.html' %}
+
+<h1>Patient Intake for Blood Collection</h1>
+
+<div class="container">
+  <div class="search-block">
+    <input id="searchValue" type="text" placeholder="Order code or patient IIN">
+    <button onclick="findByCode()">Find by Code</button>
+    <button onclick="findByIin()">Find by IIN</button>
+  </div>
+
+  <div id="resultArea"></div>
+</div>
+
+<script>
+  const API_BASE = "";
+
+  async function findByCode() {
+    const val = document.getElementById("searchValue").value.trim();
+    if (!val) return;
+    const resp = await fetch(`${API_BASE}/orders/${val}`);
+    if (!resp.ok) {
+      alert("Order not found");
+      return;
+    }
+    const order = await resp.json();
+    renderOrder(order);
+  }
+
+  async function findByIin() {
+    const val = document.getElementById("searchValue").value.trim();
+    if (!val) return;
+    const resp = await fetch(`${API_BASE}/orders/by-iin/${val}`);
+    if (!resp.ok) {
+      alert("Error searching by IIN");
+      return;
+    }
+    const list = await resp.json();
+    if (list.length === 0) {
+      alert("No orders for this IIN");
+      return;
+    }
+    renderOrder(list[0]); // для прототипа берём первую
+  }
+
+  function renderOrder(order) {
+    const div = document.getElementById("resultArea");
+    div.innerHTML = `
+      <div class="card">
+        <h3>Order #ORD-${order.code}</h3>
+        <p><strong>${order.patient.full_name}</strong><br>
+           IIN: ${order.patient.iin}<br>
+           Date of Birth: ${order.patient.date_of_birth}<br>
+           Referred by: ${order.clinic_name} (Doctor ${order.doctor_name})
+        </p>
+        <p><strong>Prescribed Tests:</strong><br>
+           ${order.allergens.map(a => a + " (IgE)").join("<br>")}
+        </p>
+        <p>
+          <label>
+            <input type="checkbox" id="idConfirmed">
+            Patient identity confirmed by documents
+          </label>
+        </p>
+        <button class="btn-green" onclick="markBloodTaken('${order.code}')">
+          BLOOD TAKEN
+        </button>
+        <button style="margin-left:10px;" onclick="cancelError()">
+          CANCEL / ERROR
+        </button>
+      </div>
+    `;
+  }
+
+  async function markBloodTaken(code) {
+    if (!document.getElementById("idConfirmed").checked) {
+      alert("Confirm patient identity first.");
+      return;
+    }
+    const resp = await fetch(`${API_BASE}/lab/${code}/blood-taken`, {
+      method: "POST"
+    });
+    if (!resp.ok) {
+      alert("Error updating status");
+      return;
+    }
+    alert("Blood taken marked successfully");
+  }
+
+  function cancelError() {
+    alert("In real system here would be cancel/error handling.");
+  }
+</script>
+</body>
+</html>

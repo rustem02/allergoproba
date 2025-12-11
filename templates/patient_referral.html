@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Allergy Test Referral</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7f9; margin:0; }
+    .container {
+      max-width: 480px;
+      margin: 10px auto;
+      background:#fff;
+      padding:16px;
+      box-shadow:0 0 0 1px #ddd;
+      border-radius:8px;
+    }
+    h2 { text-align:center; margin-top:10px; }
+    .qr { text-align:center; margin:15px 0; }
+    .qr img { width:160px; height:160px; }
+    .section-title { font-weight:bold; margin-top:10px; }
+    ul { padding-left:18px; font-size:14px; }
+    small { color:#555; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Electronic Referral</h2>
+  <p id="orderTitle"></p>
+  <p id="patientInfo"></p>
+  <p id="referrerInfo"></p>
+
+  <div class="qr">
+    <p><strong>Show this QR code at the laboratory</strong></p>
+    <img id="qrImg" alt="QR">
+  </div>
+
+  <p class="section-title">Prescribed tests:</p>
+  <ul id="testsList"></ul>
+
+  <p class="section-title">Blood collection points:</p>
+  <ul>
+    <li>Almaty, Abay 123, 1st floor</li>
+    <li>Almaty, Satpayev 99, office 305</li>
+    <li>Astana, Turan 10, medical center "LabPlus"</li>
+  </ul>
+
+  <p><small>Status: <span id="statusLabel"></span></small></p>
+</div>
+
+<script>
+  const API_BASE = "";
+
+  function getCodeFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("code");
+  }
+
+  async function loadReferral() {
+    const code = getCodeFromQuery();
+    if (!code) {
+      alert("Missing order code in URL (?code=...)");
+      return;
+    }
+    const resp = await fetch(`${API_BASE}/patient/${code}/referral`);
+    if (!resp.ok) {
+      alert("Order not found");
+      return;
+    }
+    const order = await resp.json();
+    document.getElementById("orderTitle").textContent =
+      `Order #ORD-${order.code}`;
+    document.getElementById("patientInfo").textContent =
+      `${order.patient.full_name}, IIN: ${order.patient.iin}`;
+    document.getElementById("referrerInfo").textContent =
+      `Referred by: ${order.clinic_name} (Doctor ${order.doctor_name})`;
+    document.getElementById("qrImg").src = order.qr_data_url;
+    document.getElementById("statusLabel").textContent = order.status;
+
+    const ul = document.getElementById("testsList");
+    order.allergens.forEach(a => {
+      const li = document.createElement("li");
+      li.textContent = `${a} (IgE)`;
+      ul.appendChild(li);
+    });
+  }
+
+  loadReferral();
+</script>
+</body>
+</html>

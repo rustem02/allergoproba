@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+qrcode[pil]
+requests
+python-dotenv
+psycopg2-binary
+Pillow
+Jinja2
