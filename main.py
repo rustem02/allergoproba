@@ -16,9 +16,9 @@ from pydantic import BaseModel, Field
 
 
 
-TELEGRAM_BOT_TOKEN = os.getenv("7364319868:AAFiVFSOLoSK2B2AYmy2uUrRQBFEiyqypmM")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
-TELEGRAM_DEFAULT_CHAT_ID = os.getenv("1310260588")
+TELEGRAM_DEFAULT_CHAT_ID = os.getenv("TELEGRAM_DEFAULT_CHAT_ID")
 TELEGRAM_BOT_USERNAME = "allergoproba_bot"
 
 

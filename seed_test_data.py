@@ -1,13 +1,15 @@
+import os
+
 import psycopg2
 from psycopg2.extras import execute_values
 import json
 
 
-DB_NAME = "allergoproba"
-DB_USER = "postgres"
-DB_PASSWORD = "123"
-DB_HOST = "localhost"
-DB_PORT = 5432
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 
 # ==============================
 # test data
