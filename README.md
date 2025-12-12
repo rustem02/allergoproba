@@ -16,7 +16,7 @@ The application will be available at `http://127.0.0.1:8000`.
 
 
 
-
+## Alternative: Running Locally
 
 1. **Create and activate a virtual environment:**
     ```bash
