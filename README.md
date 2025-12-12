@@ -1,3 +1,23 @@
+## Running with Docker
+
+Alternatively, you can run the application using Docker.
+
+1.  **Build the Docker image:**
+    ```bash
+    docker build -t allergoproba .
+    ```
+
+2.  **Run the Docker container:**
+    ```bash
+    docker run -p 8000:8000 --env-file .env allergoproba
+    ```
+
+The application will be available at `http://127.0.0.1:8000`.
+
+
+
+
+
 1. **Create and activate a virtual environment:**
     ```bash
     python3 -m venv .venv
@@ -37,22 +57,3 @@ The application will be available at `http://127.0.0.1:8000`.
 
 -   **Dentist's Interface**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 -   **Laboratory Interface**: [http://127.0.0.1:8000/lab](http://127.0.0.1:8000/lab)
-
-
-
-
-## Running with Docker
-
-Alternatively, you can run the application using Docker.
-
-1.  **Build the Docker image:**
-    ```bash
-    docker build -t allergoproba .
-    ```
-
-2.  **Run the Docker container:**
-    ```bash
-    docker run -p 8000:8000 --env-file .env allergoproba
-    ```
-
-The application will be available at `http://127.0.0.1:8000`.
