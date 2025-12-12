@@ -22,7 +22,7 @@
     TELEGRAM_DEFAULT_CHAT_ID="your_telegram_chat_id"
     ```
     - `TELEGRAM_BOT_TOKEN`: Already on .env.example.
-    - `TELEGRAM_DEFAULT_CHAT_ID`: A chat ID to send notifications to if the patient is not registered in the system. You can get your chat ID by @Getmyid_bot
+    - `TELEGRAM_DEFAULT_CHAT_ID`: A chat ID to send notifications. You can get your chat ID by @Getmyid_bot
 
 ## Running the Application
 
